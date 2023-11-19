@@ -87,12 +87,12 @@ class BaseExplanation:
     def _plot_changed(self, metric, original, distractor, savefig=False):
         fig = plt.figure(figsize=(6,3))
         ax = fig.gca()
-        plt.plot(range(distractor.shape[0]),
-                 original[metric].values, label='x$_{test}$',
+        plt.plot(range(distractor.shape[1]),
+                 original.values.squeeze(), label='x$_{test}$',
                  figure=fig,
                  )
-        plt.plot(range(distractor.shape[0]),
-                 distractor[metric].values, label='Distractor',
+        plt.plot(range(distractor.shape[1]),
+                 distractor.values.squeeze(), label='Distractor',
                  figure=fig)
         ax.set_ylabel(metric)
         ax.set_xlabel('Time (s)')
@@ -118,7 +118,7 @@ class BaseExplanation:
             dataset = []
             for node_id in true_positive_node_ids[c]:
                 dataset.append(self.timeseries.loc[
-                    [node_id], :, :].values.T.flatten())
+                    [node_id], :].values.T.flatten())
                 self.per_class_node_indices[c].append(node_id)
             self.per_class_trees[c] = KDTree(np.stack(dataset))
         if not self.silent:
@@ -148,7 +148,7 @@ class BaseExplanation:
                 x_test.values.T.flatten().reshape(1, -1),
                 k=n_distractors)[1].flatten():
             distractors.append(self.timeseries.loc[
-                [self.per_class_node_indices[to_maximize][idx]], :, :])
+                [self.per_class_node_indices[to_maximize][idx]], :])
         if not self.silent:
             logging.info("Returning distractors %s", [
                 x.index.get_level_values('node_id').unique().values[0]
@@ -586,8 +586,9 @@ class OptimizedSearch(BaseExplanation):
                     best_dist = dist
 
         if not self.silent and len(best_explanation) != 0:
-            for metric in best_explanation:
-                self._plot_changed(metric, x_test, best_dist, savefig=savefig)
+            self._plot_changed("hardcoded_y_label_to_replace", x_test, best_dist, savefig=savefig)
+            # for metric in best_explanation:
+            #     self._plot_changed(metric, x_test, best_dist, savefig=savefig)
 
         if return_dist == False or len(best_explanation) == 0:
             return best_explanation

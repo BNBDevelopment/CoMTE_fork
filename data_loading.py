@@ -32,7 +32,8 @@ def get_dataset(set_name, binary=False, **kwargs):
             kwargs['make_binary'] = True
         elif set_name == 'hpas':
             kwargs['classes'] = ['none', 'dcopy']
-    rootdir = Path(kwargs.get('rootdir', './data'))
+    #rootdir = Path(kwargs.get('rootdir', './data'))
+    rootdir = Path("../CoMTE/data")
     if set_name == 'taxonomist':
         kwargs['window'] = 45
         kwargs['skip'] = 45
