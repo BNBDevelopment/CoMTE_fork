@@ -120,7 +120,7 @@ class TSFeatureGenerator(BaseEstimator, TransformerMixin):
             result = np.concatenate(result, axis=0)
         return result
 
-
+ 
 def _get_features(node_id, features=None, data_path=None, trim=60, **kwargs):
     global _TIMESERIES
     assert (
